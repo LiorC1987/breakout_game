@@ -8,7 +8,7 @@ import time
 game_blocks = []
 restart_ball = True
 game_ends = False
-ball_speed = 0.01
+ball_speed = 0.05
 COLORS = ["BlueViolet", "chartreuse3", "DarkGoldenrod2", "DarkOrange1", "coral3", "DarkRed"]
 screen = Screen()
 screen.setup(width=700, height=800)
@@ -63,37 +63,29 @@ while not game_ends:
         ball.goto(paddle.xcor(), -340)
         restart_ball = True
         scoreboard.lives -= 1
+        ball_speed = 0.05
         scoreboard.update()
 
     ### WHEN THE BALL HITS A BLOCK
     for block in game_blocks:
         if abs(ball.ycor() - block.ycor()) < 20 and abs(ball.xcor() - block.xcor()) < 34:
-            ball_speed /= 2
+            ball_speed /= 1.1
             block.hideturtle()
             block.goto(1000, 1000)
             ball.bounce_block()
             game_blocks.remove(block)
-            print(len(game_blocks))
             scoreboard.score += 1
             scoreboard.update()
-
-    ### WHEN THE BALL BOUNCE OFF THE PADDLE
-    # if abs(ball.ycor() - paddle.ycor()) < 20 and abs(ball.xcor() - paddle.xcor()) < 49:
-    #     ball.bounce_paddle(-1, 1)
 
 
     ### WHEN THE BALL BOUNCE OFF THE PADDLE - DEPENDING ON WHERE IT HITS THE PADDLE
     if abs(ball.ycor() - paddle.ycor()) < 20 and 0 < (ball.xcor() - paddle.xcor()) < 20:
-        print("1")
         ball.bounce_paddle(1, 1)
     if abs(ball.ycor() - paddle.ycor()) < 20 and 0 > (ball.xcor() - paddle.xcor()) > -20:
-        print("2")
         ball.bounce_paddle(-1, 1)
     if abs(ball.ycor() - paddle.ycor()) < 20 and 26 < (ball.xcor() - paddle.xcor()) < 55:
-        print("3")
         ball.bounce_paddle(1, 1.5)
     if abs(ball.ycor() - paddle.ycor()) < 20 and -55 < (ball.xcor() - paddle.xcor()) < -26:
-        print("4")
         ball.bounce_paddle(-1, 1.5)
 
     ### WHEN THE BALL BOUNCE OFF CEILING
@@ -113,6 +105,7 @@ while not game_ends:
     if scoreboard.lives == 0:
         scoreboard.goto(-215,-20)
         scoreboard.write("GAME OVER", font=("Calibri", 60, "bold"))
+        ball.hideturtle()
 
     screen.onkeypress(paddle.move_left, "Left")
     screen.onkeypress(paddle.move_right, "Right")
